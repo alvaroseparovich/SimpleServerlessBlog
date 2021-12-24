@@ -3,57 +3,16 @@ frameworkVersion: "2"
 
 custom:
   stage: ${opt:stage, 'staging'}
+  region: sa-east-1
   DYNAMO_TABLE: ${self:service}-db
-  appSync:
-    name: ${self:service}
-    authenticationType: API_KEY
-    mappingTemplates:      
-      - type: Mutation
-        field: createTodo
-        dataSource: createTodoFunction
-        request: false
-        response: false
-      - type: Query
-        field: getTodos
-        dataSource: getTodosFunction
-        request: false
-        response: false      
-  #     - type: Mutation
-  #       field: updateTodo
-  #       dataSource: updateTodoFunction
-  #       request: false
-  #       response: false
-  #     - type: Mutation
-  #       field: deleteTodo
-  #       dataSource: deleteTodoFunction
-  #       request: false
-  #       response: false
-    dataSources:        
-      - type: AWS_LAMBDA
-        name: createTodoFunction
-        config:
-          functionName: create
-      - type: AWS_LAMBDA
-        name: getTodosFunction
-        config:
-          functionName: get                     
-
-  #     - type: AWS_LAMBDA
-  #       name: updateTodoFunction
-  #       config:
-  #         functionName: updateTodo
-
-  #     - type: AWS_LAMBDA
-  #       name: deleteTodoFunction
-  #       config:
-  #         functionName: deleteTodo
+  appSync: ${file(./serverless_extend/appSync.yaml)}
 
 
 provider:
   name: aws
   runtime: nodejs14.x
   stage: ${self:custom.stage}
-  region: sa-east-1
+  region: ${self:custom.region}
   lambdaHashingVersion: 20201221
   iam:
     role:
@@ -65,7 +24,7 @@ provider:
             - "dynamodb:DeleteItem"
             - "dynamodb:GetItem"
             - "dynamodb:Scan"
-          Resource: "arn:aws:dynamodb:#{AWS::Region}:*:table/${self:custom.DYNAMO_TABLE}"
+          Resource: "arn:aws:dynamodb:${self:custom.region}:*:table/${self:custom.DYNAMO_TABLE}"
 
 functions: 
   create:

@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "rootDir": "./functions_ts",
+    "outDir": "./functions",
+    "lib": ["es2020"],
+    "module": "commonjs",
+    "target": "es2020",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
