@@ -8,9 +8,18 @@ type Query {
 }
 
 type Mutation {
-    createTodo(id: ID!, name: String!, description: String!): Save
-    updateTodo(id: ID!, name: String!, description: String!): Update
-    deleteTodo(id: ID!): Delete
+    createTodo(id: ID!, name: String!, description: String!): Create
+    # updateTodo(id: ID!, name: String!, description: String!): Update
+    # deleteTodo(id: ID!): Delete
+}
+
+# ====================================================================||
+# ====================================================================||
+
+type Create {
+    id: ID!
+    name: String
+    description: String 
 }
 
 type Get {
@@ -19,18 +28,12 @@ type Get {
     description: String 
 }
 
-type Save {
-    id: ID!
-    name: String
-    description: String 
-}
+# type Update {
+#     id: ID!
+#     name: String
+#     description: String 
+# }
 
-type Update {
-    id: ID!
-    name: String
-    description: String 
-}
-
-type Delete {
-    id: ID! 
-}
+# type Delete {
+#     id: ID! 
+# }

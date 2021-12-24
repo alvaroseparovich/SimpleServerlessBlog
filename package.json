@@ -6,7 +6,6 @@
   "author": "Alvaro Separovich <alvasepro@gmail.com>",
   "license": "GPL3",
   "devDependencies": {
-    "serverless-appsync-plugin": "^1.12.1",
-    "serverless-pseudo-parameters": "^2.6.1"
+    "serverless-appsync-plugin": "^1.12.1"
   }
 }
