@@ -1,0 +1,108 @@
+service: colab-infra
+frameworkVersion: "2"
+
+custom:
+  stage: ${opt:stage, 'staging'}
+  DYNAMO_TABLE: ${self:service}-db
+  # appSync:
+  #   name: ${self:service}
+  #   authenticationType: API_KEY
+  #   mappingTemplates:      
+  #     - type: Mutation
+  #       field: createTodo
+  #       dataSource: createTodoFunction
+  #       request: false
+  #       response: false
+  #     - type: Mutation
+  #       field: updateTodo
+  #       dataSource: updateTodoFunction
+  #       request: false
+  #       response: false
+  #     - type: Mutation
+  #       field: deleteTodo
+  #       dataSource: deleteTodoFunction
+  #       request: false
+  #       response: false
+  #     - type: Query
+  #       field: getTodos
+  #       dataSource: getTodosFunction
+  #       request: false
+  #       response: false      
+  #   dataSources:        
+  #     - type: AWS_LAMBDA
+  #       name: createTodoFunction
+  #       config:
+  #         functionName: createTodo
+
+  #     - type: AWS_LAMBDA
+  #       name: updateTodoFunction
+  #       config:
+  #         functionName: updateTodo
+
+  #     - type: AWS_LAMBDA
+  #       name: deleteTodoFunction
+  #       config:
+  #         functionName: deleteTodo
+
+  #     - type: AWS_LAMBDA
+  #       name: getTodosFunction
+  #       config:
+  #         functionName: getTodos                     
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${self:custom.stage}
+  region: sa-east-1
+  lambdaHashingVersion: 20201221
+  # iam:
+  #   role:
+  #     statements:
+  #       - Effect: "Allow"
+  #         Action:            
+  #           - "dynamodb:PutItem"
+  #           - "dynamodb:UpdateItem"
+  #           - "dynamodb:DeleteItem"
+  #           - "dynamodb:GetItem"
+  #           - "dynamodb:Scan"
+  #         Resource: "arn:aws:dynamodb:#{AWS::Region}:*:table/${self:custom.DYNAMO_TABLE}"
+
+# functions: 
+#   postGet:
+#     handler: functions/post.get
+#     environment:
+#       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
+#   postCreate:
+#     handler: functions/post.create
+#     environment:
+#       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
+#   postUpdate:
+#     handler: functions/post.update
+#     environment:
+#       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
+#   postDelete:
+#     handler: functions/post.delete
+#     environment:
+#       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
+
+resources:
+  Resources:
+    DynamoTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.DYNAMO_TABLE}
+
+# plugins:
+#    - serverless-appsync-plugin
+#    - serverless-pseudo-parameters
