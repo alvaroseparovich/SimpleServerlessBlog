@@ -5,7 +5,7 @@ custom:
   stage: ${opt:stage, 'staging'}
   region: sa-east-1
   DYNAMO_TABLE: ${self:service}-db
-  appSync: ${file(./serverless_extend/appSync.yaml)}
+  appSync: ${file(./sls_extend/appSync.yaml)}
 
 
 provider:
@@ -35,14 +35,6 @@ functions:
     handler: functions/post.get
     environment:
       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
-#   postUpdate:
-#     handler: functions/post.update
-#     environment:
-#       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
-#   postDelete:
-#     handler: functions/post.delete
-#     environment:
-#       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
 
 resources:
   Resources:

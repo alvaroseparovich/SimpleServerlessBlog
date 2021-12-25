@@ -1,117 +1,38 @@
-const AWS = require('aws-sdk')
-const dynamodb = new AWS.DynamoDB.DocumentClient()
+declare global { interface Blob {}  interface File {}} // https://github.com/aws/aws-sdk-js-v3/issues/2125
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { appSyncEvent } from './types/events'
 
-module.exports.create = async (event) => {    
-  console.log('event -> ', event)
-  const { id, name, description } = event.arguments
+const DB = DynamoDBDocumentClient.from(new DynamoDBClient({}))
+const PK = 'POST'
 
-  const params = {
-    Item: { id, name, description },
-    ReturnConsumedCapacity: "TOTAL",
-    TableName: process.env.TODO_TABLE_NAME
-  }
-
-  return dynamodb.putItem(params).promise()
-    .then(data => {            
-        return {
-            id,
-            name,
-            description
-        }
-    })
-    .catch(err => {
-        console.log(err)
-    })
-};
-module.exports.delete = async (event) => {
-  console.log('event -> ', event)
-
-  const id = event.arguments.id
-
-  const params = {
-    Key: {
-        "id": {
-            S: id
-        }
-    },
-    TableName: process.env.TODO_TABLE_NAME
-  }
-
-
-  return dynamodb.deleteItem(params).promise()
-      .then(data => {   
-          console.log('deleteItem -> ', data)         
-          return {
-              data
-          }
-      })
-      .catch(err => {
-        console.log(err)
-      })
-};
-module.exports.get = async (event) => {
-console.log('event -> ', event)
-
-const params = {        
-    TableName: process.env.TODO_TABLE_NAME
+function rand (min: number, max: number):number {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+}
+function createSK (prepend:string = PK):string {
+  return `${prepend}#${(new Date).toISOString()}${rand(10000,99999)}`
 }
 
-return dynamodb.scan(params).promise()
-    .then(data => {            
-        const todoList = [];
-        for (let i = 0; i < data.Items.length; i++) {
-            todoList.push({
-                id: data.Items[i].id.S,
-                name: data.Items[i].name.S,
-                description: data.Items[i].description.S
-            });        
-        }
-        return todoList;            
-    })
-    .catch(err => {
-        console.log(err)
-    })
-};
-module.exports.update = async (event) => {
-console.log('event -> ', event)
-
-const id = event.arguments.id
-const name = event.arguments.name
-const description = event.arguments.description
-
-const params = {
-  ExpressionAttributeNames: {
-      "#n": "name",
-      "#d": "description"          
-  },
-  ExpressionAttributeValues: {
-      ":n": {
-          S: name
-      },
-      ":d": {
-          S: description
-      }
-  },
-  Key: {
-      "id": {
-          S: id
-      }
-  },
-  ReturnValues: "ALL_NEW",
-  TableName: process.env.TODO_TABLE_NAME,
-  UpdateExpression: "SET #n = :n, #d = :d"
+export async function create (event:appSyncEvent) {    
+  console.log('event -> ', event)
+  const { arguments: args } = event
+  
+  const SK = createSK()
+  const command = new PutCommand({ 
+    TableName: process.env.DYNAMO_TABLE_NAME,
+    Item: { PK, SK, ...args }
+  })
+  const response = await DB.send(command)
+  return {...args, id: SK}
 }
 
-return dynamodb.updateItem(params).promise()
-  .then(data => {
-      const body = data.Attributes
-      return {
-        id: body.id.S,
-        name: body.name.S,
-        description: body.description.S
-      }
-  })
-  .catch(err => {
-    console.log(err)
-  })
-};
+export async function get (event:appSyncEvent) {
+  console.log('event -> ', event)
+
+  const params = {        
+      TableName: process.env.DYNAMO_TABLE_NAME
+  }
+  return {}
+}

@@ -1,0 +1,22 @@
+name: ${self:service}
+authenticationType: API_KEY
+mappingTemplates:
+  - type: Mutation
+    field: createTodo
+    dataSource: createTodoFunction
+    request: false
+    response: false
+  - type: Query
+    field: getTodos
+    dataSource: getTodosFunction
+    request: false
+    response: false
+dataSources:
+  - type: AWS_LAMBDA
+    name: createTodoFunction
+    config:
+      functionName: create
+  - type: AWS_LAMBDA
+    name: getTodosFunction
+    config:
+      functionName: get
