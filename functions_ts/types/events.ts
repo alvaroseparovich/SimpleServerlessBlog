@@ -1,17 +1,11 @@
 export interface appSyncEvent {
-  arguments: Arguments;
+  arguments: any;
   identity:  null;
   source:    null;
   request:   Request;
   prev:      null;
   info:      Info;
   stash:     Stash;
-}
-
-export interface Arguments {
-  id:          string;
-  name:        string;
-  description: string;
 }
 
 export interface Info {
