@@ -1,0 +1,9 @@
+{
+  "arguments": { "id": "2021-12-25T02:16:48.192Z#98193" },
+  "info": {
+    "selectionSetList": ["id", "description", "name"],
+    "fieldName": "getTodos",
+    "parentTypeName": "Query",
+    "variables": {}
+  }
+}

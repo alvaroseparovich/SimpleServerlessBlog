@@ -4,11 +4,11 @@ schema {
 }
 
 type Query {
-    getTodos: [Get!]!
+    getTodos(id: ID!): Get!
 }
 
 type Mutation {
-    createTodo(id: ID!, name: String!, description: String!): Create
+    createTodo(name: String!, description: String!): Create
 }
 
 type Create {
