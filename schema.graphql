@@ -10,10 +10,13 @@ type Query {
 
 type Mutation {
     CREATE_POST(post: PostInput): Post
+    UPDATE_POST(id: ID! post: PostInput!): Post
+    MINIMAL_UPDATE_POST(id: ID! post: PostInput!): Post
 }
 
 input PostInput {
     title: String
+    slug: String
     content: String
     categories: [String] 
     tags: [ID] 
@@ -23,16 +26,24 @@ input PostInput {
 type Post {
     id: ID
     title: String
-    content: String 
-    author: String 
-    authorID: ID 
-    coAuthors: [String] 
-    coAuthorsID: [ID] 
+    slug: String
+    content: String
     categories: [String] 
     tags: [ID] 
     references: [Reference]
     imgUrl: String
+    currentVersion: String
+    # meta: Meta
 }
+
+# type Meta {
+#     originalAuthor: String 
+#     author: String 
+#     authorID: ID 
+#     coAuthors: [String] 
+#     coAuthorsID: [ID]
+#     references: [Reference]
+# }
 
 input ReferenceInput {
     text: String

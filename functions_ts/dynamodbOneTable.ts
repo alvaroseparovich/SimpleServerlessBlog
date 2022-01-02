@@ -22,16 +22,30 @@ export function atributeToGetFromEvent(selectionSetList) {
   return selectionSetList
 }
 
-export function generateExpressionAttributeValuesFromList(list){
-  const finalObject = {}
-  list.map(value => finalObject[`:${value}`] = value)
-  return finalObject
+export function ExpressionAttributeValuesFromObject(original:Object){
+  return parseObjectToPrependedKey(original)
 }
 export function ExpressionAttributeNamesFromList(list:string[]) {
-  const finalObject = {}
-  list.map(value => finalObject[`#${value}`] = value)
-  return finalObject
+  return parseListToPrependedKeyMap(list,'#')
 }
 export function generateProjectionExpressionFromList(list:string[]){
   return list.map(value => `#${value}`).join(', ')
+}
+
+export function parseListToPrependedKeyMap(list:string[], prepend:string) {
+  const finalObject = {}
+  list.map(value => finalObject[`${prepend}${value}`] = value)
+  return finalObject
+}
+
+export function parseObjectToPrependedKey(original:Object, prepend:string = ':') {
+  const arrayOfKeyValues = Object.entries(original)
+  const prependedKeys = arrayOfKeyValues.map(([ key, value ]) => [`${prepend}${key}`, value])
+  return Object.fromEntries(prependedKeys)
+}
+
+export function UpdateExpressionGenerator(list:string[]) {
+  return list.reduce((acc, curr, index) => {
+    return `${acc}${index === 0 ? ' ' : ', ' }#${curr} = :${curr}`
+  }, 'SET')
 }

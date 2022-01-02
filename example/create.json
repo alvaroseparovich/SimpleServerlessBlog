@@ -1,7 +1,8 @@
 {
   "arguments": {
-    "id": "1",
-    "name": "123",
-    "description": "asd"
+    "post":{
+      "id": "1",
+      "title": "123s aasd sad asd as dsa dsad sad "
+    }
   }
 }
