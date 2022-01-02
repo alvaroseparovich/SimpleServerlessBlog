@@ -5,6 +5,7 @@ custom:
   stage: ${opt:stage, 'staging'}
   region: sa-east-1
   DYNAMO_TABLE: ${self:service}-db
+  FirstSecondaryIndex: Index-Inverted
   appSync: ${file(./sls_extend/appSync.yaml)}
 
 
@@ -14,6 +15,8 @@ provider:
   stage: ${self:custom.stage}
   region: ${self:custom.region}
   lambdaHashingVersion: 20201221
+  environment:
+    FirstSecondaryIndex: ${self:custom.FirstSecondaryIndex}
   iam:
     role:
       statements:
@@ -27,12 +30,16 @@ provider:
           Resource: "arn:aws:dynamodb:${self:custom.region}:*:table/${self:custom.DYNAMO_TABLE}"
 
 functions: 
-  create:
+  CREATE_POST:
     handler: functions/post.create
     environment:
       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
-  get:
+  GET_POST:
     handler: functions/post.get
+    environment:
+      DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
+  GET_LAST_POSTS:
+    handler: functions/post.getLastPosts
     environment:
       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
 
@@ -53,6 +60,14 @@ resources:
             AttributeType: S
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.DYNAMO_TABLE}
-
+        GlobalSecondaryIndexes:
+          - IndexName: Index-Inverted
+            KeySchema: 
+              - AttributeName: SK
+                KeyType: HASH
+              - AttributeName: PK
+                KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
 plugins:
   - serverless-appsync-plugin

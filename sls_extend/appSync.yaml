@@ -2,21 +2,21 @@ name: ${self:service}
 authenticationType: API_KEY
 mappingTemplates:
   - type: Mutation
-    field: createTodo
-    dataSource: createTodoFunction
+    field: CREATE_POST
+    dataSource: CREATE_POSTFunction
     request: false
     response: false
   - type: Query
-    field: getTodos
-    dataSource: getTodosFunction
+    field: GET_POST
+    dataSource: GET_POSTFunction
     request: false
     response: false
 dataSources:
   - type: AWS_LAMBDA
-    name: createTodoFunction
+    name: CREATE_POSTFunction
     config:
-      functionName: create
+      functionName: CREATE_POST
   - type: AWS_LAMBDA
-    name: getTodosFunction
+    name: GET_POSTFunction
     config:
-      functionName: get
+      functionName: GET_POST

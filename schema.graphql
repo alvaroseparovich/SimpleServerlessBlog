@@ -4,21 +4,19 @@ schema {
 }
 
 type Query {
-    getTodos(id: ID!): Get!
+    GET_POST(id: ID!): Post!
 }
 
 type Mutation {
-    createTodo(name: String!, description: String!): Create
+    CREATE_POST(post: PostInput): Post
 }
 
-type Create {
-    id: ID!
+input PostInput {
     name: String
     description: String 
 }
-
-type Get {
-    id: ID!
+type Post {
+    id: ID
     name: String
     description: String 
 }

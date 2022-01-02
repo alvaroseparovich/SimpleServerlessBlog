@@ -21,3 +21,17 @@ export function atributeToGetFromEvent(selectionSetList) {
   }
   return selectionSetList
 }
+
+export function generateExpressionAttributeValuesFromList(list){
+  const finalObject = {}
+  list.map(value => finalObject[`:${value}`] = value)
+  return finalObject
+}
+export function ExpressionAttributeNamesFromList(list:string[]) {
+  const finalObject = {}
+  list.map(value => finalObject[`#${value}`] = value)
+  return finalObject
+}
+export function generateProjectionExpressionFromList(list:string[]){
+  return list.map(value => `#${value}`).join(', ')
+}
