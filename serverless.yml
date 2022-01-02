@@ -45,6 +45,10 @@ functions:
     handler: functions/post.getLastPosts
     environment:
       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
+  GET_LAST_POST_VERSIONS:
+    handler: functions/post.getLastPostVersions
+    environment:
+      DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
   UPDATE_POST:
     handler: functions/post.update
     environment:

@@ -26,6 +26,11 @@ mappingTemplates:
     dataSource: GET_LAST_POSTSFunction
     request: false
     response: false
+  - type: Query
+    field: GET_LAST_POST_VERSIONS
+    dataSource: GET_LAST_POST_VERSIONSFunction
+    request: false
+    response: false
 dataSources:
   - type: AWS_LAMBDA
     name: CREATE_POSTFunction
@@ -47,3 +52,7 @@ dataSources:
     name: MINIMAL_UPDATE_POSTFunction
     config:
       functionName: MINIMAL_UPDATE_POST
+  - type: AWS_LAMBDA
+    name: GET_LAST_POST_VERSIONSFunction
+    config:
+      functionName: GET_LAST_POST_VERSIONS

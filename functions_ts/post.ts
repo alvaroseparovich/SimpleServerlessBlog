@@ -76,6 +76,34 @@ export async function getLastPosts (event:appSyncEvent) {
   return Items.map(removeCompositeKeys)
 }
 
+export async function getLastPostVersions (event:appSyncEvent) {
+  console.log('event -> ', JSON.stringify(event, null, 2))
+
+  const selectionSetList = atributeToGetFromEvent(event.info.selectionSetList)
+  selectionSetList.push('SK')
+  const ExpressionAttributeNames = ExpressionAttributeNamesFromList(selectionSetList)
+  const ProjectionExpression = generateProjectionExpressionFromList(selectionSetList)
+  const command = new QueryCommand({        
+    TableName: process.env.DYNAMO_TABLE_NAME,
+    KeyConditionExpression: 'PK = :PK and begins_with(SK, :SK)',
+    ExpressionAttributeValues: {
+      ':PK': event.arguments.id,
+      ':SK': 'VERSION',
+    },
+    ExpressionAttributeNames,
+    ProjectionExpression
+  })
+  const { Items } = await DB.send(command)
+  console.log(Items)
+  return Items.map(item => {
+    item.id = item.PK
+    item.version = item.SK
+    delete item.PK
+    delete item.SK
+    return item
+  })
+}
+
 export async function update (event:appSyncEvent) {    
   console.log('event -> ', JSON.stringify(event, null, 2))
   const { id, post } = event.arguments

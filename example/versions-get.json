@@ -1,7 +1,7 @@
 {
   "arguments": { "id": "2022-01-02T02:52:29.390Z#55235" },
   "info": {
-    "selectionSetList": ["id", "description", "title"],
+    "selectionSetList": [ "title"],
     "fieldName": "GET_POST",
     "parentTypeName": "Query",
     "variables": {}
