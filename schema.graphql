@@ -5,6 +5,7 @@ schema {
 
 type Query {
     GET_POST(id: ID!): Post!
+    GET_LAST_POSTS: [Post]!
 }
 
 type Mutation {
@@ -12,11 +13,32 @@ type Mutation {
 }
 
 input PostInput {
-    name: String
-    description: String 
+    title: String
+    content: String
+    categories: [String] 
+    tags: [ID] 
+    references: [ReferenceInput]
+    imgUrl: String
 }
 type Post {
     id: ID
-    name: String
-    description: String 
+    title: String
+    content: String 
+    author: String 
+    authorID: ID 
+    coAuthors: [String] 
+    coAuthorsID: [ID] 
+    categories: [String] 
+    tags: [ID] 
+    references: [Reference]
+    imgUrl: String
+}
+
+input ReferenceInput {
+    text: String
+    url: String
+}
+type Reference {
+    text: String
+    url: String
 }

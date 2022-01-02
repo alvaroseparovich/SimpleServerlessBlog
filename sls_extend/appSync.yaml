@@ -11,6 +11,11 @@ mappingTemplates:
     dataSource: GET_POSTFunction
     request: false
     response: false
+  - type: Query
+    field: GET_LAST_POSTS
+    dataSource: GET_LAST_POSTSFunction
+    request: false
+    response: false
 dataSources:
   - type: AWS_LAMBDA
     name: CREATE_POSTFunction
@@ -20,3 +25,7 @@ dataSources:
     name: GET_POSTFunction
     config:
       functionName: GET_POST
+  - type: AWS_LAMBDA
+    name: GET_LAST_POSTSFunction
+    config:
+      functionName: GET_LAST_POSTS

@@ -27,7 +27,10 @@ provider:
             - "dynamodb:DeleteItem"
             - "dynamodb:GetItem"
             - "dynamodb:Scan"
-          Resource: "arn:aws:dynamodb:${self:custom.region}:*:table/${self:custom.DYNAMO_TABLE}"
+            - "dynamodb:Query"
+          Resource: 
+            - arn:aws:dynamodb:${self:custom.region}:*:table/${self:custom.DYNAMO_TABLE}
+            - arn:aws:dynamodb:${self:custom.region}:*:table/${self:custom.DYNAMO_TABLE}/index/Index-Inverted
 
 functions: 
   CREATE_POST:
