@@ -1,11 +1,34 @@
 export interface appSyncEvent {
   arguments: any;
-  identity:  null;
+  identity:  Identity;
   source:    null;
   request:   Request;
   prev:      null;
   info:      Info;
   stash:     Stash;
+}
+export interface Identity {
+  claims:              Claims;
+  defaultAuthStrategy: string;
+  groups:              null;
+  issuer:              string;
+  sourceIp:            string[];
+  sub:                 string;
+  username:            string;
+}
+
+export interface Claims {
+  origin_jti:         string;
+  sub:                string;
+  aud:                string;
+  event_id:           string;
+  token_use:          string;
+  auth_time:          number;
+  iss:                string;
+  "cognito:username": string;
+  exp:                number;
+  iat:                number;
+  jti:                string;
 }
 
 export interface Info {

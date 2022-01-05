@@ -25,11 +25,12 @@ function createPK ():string {
 export async function create (event:appSyncEvent) {    
   console.log('event -> ', JSON.stringify(event, null, 2))
   const { id, ...args } = event.arguments.post
+  const { sub } = event.identity
   const PK = createPK()
   const version = `VERSION#${new Date().getTime()}`
   const command = new PutCommand({ 
     TableName: process.env.DYNAMO_TABLE_NAME,
-    Item: { PK, SK, ...args, currentVersion: version }
+    Item: { PK, SK, ...args, currentVersion: version, sub }
   })
   const commandVersion = new PutCommand({ 
     TableName: process.env.DYNAMO_TABLE_NAME,

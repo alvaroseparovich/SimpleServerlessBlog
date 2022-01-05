@@ -8,7 +8,6 @@ custom:
   FirstSecondaryIndex: Index-Inverted
   appSync: ${file(./sls_extend/appSync.yaml)}
 
-
 provider:
   name: aws
   runtime: nodejs14.x
@@ -84,5 +83,39 @@ resources:
                 KeyType: RANGE
             Projection: 
               ProjectionType: ALL
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:service}-${self:provider.stage}
+        AutoVerifiedAttributes:
+            - email
+        AliasAttributes:
+            - email
+        Schema:
+            - AttributeDataType: String
+              Name: role
+              Mutable: true
+            - AttributeDataType: String
+              Name: username
+              Mutable: true
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 6
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireSymbols: false
+            RequireUppercase: false
+      # DeletionPolicy: Retain
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:service}-${self:provider.stage}
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+            - ADMIN_NO_SRP_AUTH
+            - USER_PASSWORD_AUTH
+        GenerateSecret: false
+      # DeletionPolicy: Retain
 plugins:
   - serverless-appsync-plugin

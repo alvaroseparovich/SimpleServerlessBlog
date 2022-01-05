@@ -1,5 +1,15 @@
 name: ${self:service}
-authenticationType: API_KEY
+authenticationType: AMAZON_COGNITO_USER_POOLS
+userPoolConfig:
+  defaultAction: ALLOW
+  userPoolId: { "Fn::Select" : [ "1", { "Fn::Split" : [ "/", { "Fn::GetAtt" : [ "CognitoUserPool", "Arn" ] } ] }]}
+# authenticationType: API_KEY
+# apiKeys:
+#   - name: For OpenRoutes # name of the api key
+#     description: 'Open Routes Shoud Use this Api'
+#     expiresAfter: 30d # api key life time
+# additionalAuthenticationProviders:
+#   - authenticationType: API_KEY
 mappingTemplates:
   - type: Mutation
     field: CREATE_POST
