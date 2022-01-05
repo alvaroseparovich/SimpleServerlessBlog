@@ -8,8 +8,8 @@ userPoolConfig:
 #   - name: For OpenRoutes # name of the api key
 #     description: 'Open Routes Shoud Use this Api'
 #     expiresAfter: 30d # api key life time
-# additionalAuthenticationProviders:
-#   - authenticationType: API_KEY
+additionalAuthenticationProviders:
+  - authenticationType: API_KEY
 mappingTemplates:
   - type: Mutation
     field: CREATE_POST

@@ -9,6 +9,7 @@ custom:
   appSync: ${file(./sls_extend/appSync.yaml)}
   appsync-simulator:
     port: 20002
+    apiKey: da2-fakeApiId123456
     watch:
       - "*.graphql"       # => string like this is equivalent to `["match", "*.graphql"]`
 
