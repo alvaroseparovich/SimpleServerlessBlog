@@ -7,6 +7,10 @@ custom:
   DYNAMO_TABLE: ${self:service}-db
   FirstSecondaryIndex: Index-Inverted
   appSync: ${file(./sls_extend/appSync.yaml)}
+  appsync-simulator:
+    port: 20002
+    watch:
+      - "*.graphql"       # => string like this is equivalent to `["match", "*.graphql"]`
 
 provider:
   name: aws
@@ -119,3 +123,5 @@ resources:
       # DeletionPolicy: Retain
 plugins:
   - serverless-appsync-plugin
+  - serverless-appsync-simulator
+  - serverless-offline

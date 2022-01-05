@@ -6,6 +6,7 @@ type Mutation {
 
 type Post {
 	id: ID
+	status: Status
 	title: String
 	slug: String
 	content: String
@@ -15,9 +16,16 @@ type Post {
 	imgUrl: String
 	currentVersion: String
 }
+enum Status {
+	public
+	private
+	deleted
+	archived
+}
 
 input PostInput {
 	title: String
+	status: Status
 	slug: String
 	content: String
 	categories: [String]
