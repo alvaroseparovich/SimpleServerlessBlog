@@ -108,12 +108,16 @@ export async function getLastPostVersions (event:appSyncEvent) {
 export async function update (event:appSyncEvent) {    
   console.log('event -> ', JSON.stringify(event, null, 2))
   const { id, post } = event.arguments
+  const { sub } = event.identity
   const PK = id
   const version = `VERSION#${new Date().getTime()}`
 
   const command = new PutCommand({ 
     TableName: process.env.DYNAMO_TABLE_NAME,
-    Item: { PK, SK, ...post, currentVersion: version }
+    Item: { PK, SK, ...post, currentVersion: version, sub },
+    ConditionExpression: '#sub = :sub',
+    ExpressionAttributeNames: ExpressionAttributeNamesFromList(['sub']),
+    ExpressionAttributeValues: ExpressionAttributeValuesFromObject({ sub })
   })
   const commandVersion = new PutCommand({ 
     TableName: process.env.DYNAMO_TABLE_NAME,
@@ -127,8 +131,10 @@ export async function update (event:appSyncEvent) {
 export async function minimalUpdate (event:appSyncEvent) {    
   console.log('event -> ', JSON.stringify(event, null, 2))
   const { id, post } = event.arguments
+  const { sub } = event.identity
   const version = `VERSION#${new Date().getTime()}`
   post.currentVersion = version
+  post.sub = sub
   const keyList = Object.keys(post)
   const ExpressionAttributeNames = ExpressionAttributeNamesFromList(keyList)
   const ExpressionAttributeValues = ExpressionAttributeValuesFromObject(post)
@@ -136,6 +142,7 @@ export async function minimalUpdate (event:appSyncEvent) {
   const command = new UpdateCommand({ 
     TableName: process.env.DYNAMO_TABLE_NAME,
     Key: { PK:id, SK },
+    ConditionExpression: '#sub = :sub',
     ExpressionAttributeNames,
     ExpressionAttributeValues,
     UpdateExpression,
