@@ -14,6 +14,9 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.45.0",
     "@aws-sdk/lib-dynamodb": "^3.45.0",
+    "@typedorm/common": "^1.14.9",
+    "@typedorm/core": "^1.14.9",
+    "reflect-metadata": "^0.1.13",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
@@ -23,6 +26,7 @@
     "@types/node": "^16.4.10",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
+    "aws-sdk": "^2.1053.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",

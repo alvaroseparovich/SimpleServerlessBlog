@@ -7,9 +7,11 @@ import {
   QueryCommand,
   UpdateCommand
  } from '@aws-sdk/lib-dynamodb'
-import { atributeToGetFromEvent, ExpressionAttributeNamesFromList, ExpressionAttributeValuesFromObject, generateProjectionExpressionFromList, removeCompositeKeys, UpdateExpressionGenerator } from './dynamodbOneTable'
+import { atributeToGetFromEvent, ExpressionAttributeNamesFromList, ExpressionAttributeValuesFromObject, generateProjectionExpressionFromList, insertValues, removeCompositeKeys, UpdateExpressionGenerator } from './dynamodbOneTable'
 import { appSyncEvent } from './types/events'
-
+import { getEntityManager } from '@typedorm/core';
+import { POST } from './types/Entities'
+const entityManger = getEntityManager();
 const DB = DynamoDBDocumentClient.from(new DynamoDBClient({}))
 const SK = 'POST'
 
@@ -25,20 +27,11 @@ function createPK ():string {
 export async function create (event:appSyncEvent) {    
   console.log('event -> ', JSON.stringify(event, null, 2))
   const { id, ...args } = event.arguments.post
-  const { sub } = event.identity
-  const PK = createPK()
-  const version = `VERSION#${new Date().getTime()}`
-  const command = new PutCommand({ 
-    TableName: process.env.DYNAMO_TABLE_NAME,
-    Item: { PK, SK, ...args, currentVersion: version, sub }
-  })
-  const commandVersion = new PutCommand({ 
-    TableName: process.env.DYNAMO_TABLE_NAME,
-    Item: { PK, SK: version, ...args }
-  })
-  await DB.send(command)
-  await DB.send(commandVersion)
-  return {...args, id: PK}
+  args.creator = event.identity.sub
+  const post = new POST()
+  const a = await entityManger.create(insertValues(post, args))
+  console.log(a)
+  return {...args}
 }
 
 export async function get (event:appSyncEvent) {

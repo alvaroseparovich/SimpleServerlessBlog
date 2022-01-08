@@ -21,6 +21,7 @@ provider:
   region: ${self:custom.region}
   lambdaHashingVersion: 20201221
   environment:
+    DYNAMO_TABLE: ${self:custom.DYNAMO_TABLE}
     FirstSecondaryIndex: ${self:custom.FirstSecondaryIndex}
     SkStatus: ${self:custom.SkStatus}
   iam:
@@ -36,7 +37,7 @@ provider:
             - "dynamodb:Query"
           Resource: 
             - arn:aws:dynamodb:${self:custom.region}:*:table/${self:custom.DYNAMO_TABLE}
-            - arn:aws:dynamodb:${self:custom.region}:*:table/${self:custom.DYNAMO_TABLE}/index/Index-Inverted
+            - arn:aws:dynamodb:${self:custom.region}:*:table/${self:custom.DYNAMO_TABLE}/index/${self:custom.FirstSecondaryIndex}
 
 functions: 
   CREATE_POST:
@@ -79,12 +80,10 @@ resources:
             AttributeType: S
           - AttributeName: SK
             AttributeType: S
-          - AttributeName: status
-            AttributeType: S
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.DYNAMO_TABLE}
         GlobalSecondaryIndexes:
-          - IndexName: Index-Inverted
+          - IndexName: ${self:custom.FirstSecondaryIndex}
             KeySchema: 
               - AttributeName: SK
                 KeyType: HASH
@@ -92,16 +91,7 @@ resources:
                 KeyType: RANGE
             Projection: 
               ProjectionType: ALL
-          - IndexName: SK-status
-            KeySchema: 
-              - AttributeName: SK
-                KeyType: HASH
-              - AttributeName: status
-                KeyType: RANGE
-            Projection: 
-              ProjectionType: INCLUDE
-              NonKeyAttributes:
-                - title
+
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:

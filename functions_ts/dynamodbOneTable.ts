@@ -49,3 +49,10 @@ export function UpdateExpressionGenerator(list:string[]) {
     return `${acc}${index === 0 ? ' ' : ', ' }#${curr} = :${curr}`
   }, 'SET')
 }
+
+export function insertValues(Instancia, atributesObject) {
+  Object.entries(atributesObject).map(([key, value]) =>{
+    Instancia[key] = value
+  })
+  return Instancia
+}
