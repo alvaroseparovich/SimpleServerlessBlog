@@ -6,6 +6,7 @@ custom:
   region: sa-east-1
   DYNAMO_TABLE: ${self:service}-db
   FirstSecondaryIndex: Index-Inverted
+  SkStatus: SK-status
   appSync: ${file(./sls_extend/appSync.yaml)}
   appsync-simulator:
     port: 20002
@@ -21,6 +22,7 @@ provider:
   lambdaHashingVersion: 20201221
   environment:
     FirstSecondaryIndex: ${self:custom.FirstSecondaryIndex}
+    SkStatus: ${self:custom.SkStatus}
   iam:
     role:
       statements:
@@ -77,6 +79,8 @@ resources:
             AttributeType: S
           - AttributeName: SK
             AttributeType: S
+          - AttributeName: status
+            AttributeType: S
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.DYNAMO_TABLE}
         GlobalSecondaryIndexes:
@@ -88,6 +92,16 @@ resources:
                 KeyType: RANGE
             Projection: 
               ProjectionType: ALL
+          - IndexName: SK-status
+            KeySchema: 
+              - AttributeName: SK
+                KeyType: HASH
+              - AttributeName: status
+                KeyType: RANGE
+            Projection: 
+              ProjectionType: INCLUDE
+              NonKeyAttributes:
+                - title
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:

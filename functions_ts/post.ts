@@ -58,6 +58,7 @@ export async function get (event:appSyncEvent) {
 
 export async function getLastPosts (event:appSyncEvent) {
   console.log('event -> ', JSON.stringify(event, null, 2))
+  const status = event.arguments.status || 'PUBLIC'
 
   const selectionSetList = atributeToGetFromEvent(event.info.selectionSetList)
   const ExpressionAttributeNames = ExpressionAttributeNamesFromList(selectionSetList)
