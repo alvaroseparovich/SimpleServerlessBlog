@@ -1,66 +1,38 @@
 type Mutation {
 	CREATE_POST(post: PostInput): Post
 	UPDATE_POST(id: ID!, post: PostInput!): Post
-	MINIMAL_UPDATE_POST(id: ID!, post: PostInput!): Post
 }
 
-type Post @aws_cognito_user_pools @aws_api_key{
+type Post @aws_cognito_user_pools @aws_api_key {
 	id: ID
-	status: Status
-	title: String
-	slug: String
 	content: String
-	categories: [String]
-	tags: [ID]
-	references: [Reference]
+	title: String
 	imgUrl: String
-	currentVersion: String
-}
-enum Status {
-	PUBLIC
-	PRIVATE
-	DELETED
-	ARCHIVED
+	author: String
+	authorSlug: String
+	slug: String
+	status: Status
 }
 
 input PostInput {
-	title: String
-	status: Status
-	slug: String
 	content: String
-	categories: [String]
-	tags: [ID]
-	references: [ReferenceInput]
+	title: String
 	imgUrl: String
+	author: String
+	authorSlug: String
+	slug: String
+	status: Status
 }
 
-type PostVersion {
-	id: ID
-	title: String
-	slug: String
-	content: String
-	categories: [String]
-	tags: [ID]
-	references: [Reference]
-	imgUrl: String
-	currentVersion: String
-	version: String
+enum Status {
+	published
+	open_to_contribution
+	draft
+	deleted
 }
 
 type Query {
 	GET_POST(id: ID!): Post!
-	GET_LAST_POSTS(status:Status): [Post]!	@aws_api_key @aws_cognito_user_pools
-	GET_LAST_POST_VERSIONS(id: ID!): [PostVersion]!
-}
-
-type Reference {
-	text: String
-	url: String
-}
-
-input ReferenceInput {
-	text: String
-	url: String
 }
 
 schema {

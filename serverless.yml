@@ -6,6 +6,7 @@ custom:
   region: sa-east-1
   DYNAMO_TABLE: ${self:service}-db
   FirstSecondaryIndex: Index-Inverted
+  SecondSecondaryIndex: GSI-2
   SkStatus: SK-status
   appSync: ${file(./sls_extend/appSync.yaml)}
   appsync-simulator:
@@ -48,20 +49,8 @@ functions:
     handler: functions/post.get
     environment:
       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
-  GET_LAST_POSTS:
-    handler: functions/post.getLastPosts
-    environment:
-      DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
-  GET_LAST_POST_VERSIONS:
-    handler: functions/post.getLastPostVersions
-    environment:
-      DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
   UPDATE_POST:
     handler: functions/post.update
-    environment:
-      DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
-  MINIMAL_UPDATE_POST:
-    handler: functions/post.minimalUpdate
     environment:
       DYNAMO_TABLE_NAME: { "Ref": "DynamoTable"} # Alterado de !Ref DynamoTable para { "Ref": "DynamoTable"} apenas para resolver problema no linter
 
@@ -80,6 +69,8 @@ resources:
             AttributeType: S
           - AttributeName: SK
             AttributeType: S
+          - AttributeName: GSI-2-PK
+            AttributeType: S
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:custom.DYNAMO_TABLE}
         GlobalSecondaryIndexes:
@@ -88,6 +79,14 @@ resources:
               - AttributeName: SK
                 KeyType: HASH
               - AttributeName: PK
+                KeyType: RANGE
+            Projection: 
+              ProjectionType: ALL
+          - IndexName: ${self:custom.SecondSecondaryIndex}
+            KeySchema: 
+              - AttributeName: GSI-2-PK
+                KeyType: HASH
+              - AttributeName: SK
                 KeyType: RANGE
             Projection: 
               ProjectionType: ALL

@@ -2,7 +2,8 @@ name: ${self:service}
 authenticationType: AMAZON_COGNITO_USER_POOLS
 userPoolConfig:
   defaultAction: ALLOW
-  userPoolId: { "Fn::Select" : [ "1", { "Fn::Split" : [ "/", { "Fn::GetAtt" : [ "CognitoUserPool", "Arn" ] } ] }]}
+  # userPoolId: { "Fn::Select" : [ "1", { "Fn::Split" : [ "/", { "Fn::GetAtt" : [ "CognitoUserPool", "Arn" ] } ] }]}
+  userPoolId: sa-east-1_xgVWO2MpW
 # authenticationType: API_KEY
 # apiKeys:
 #   - name: For OpenRoutes # name of the api key
@@ -21,24 +22,9 @@ mappingTemplates:
     dataSource: UPDATE_POSTFunction
     request: false
     response: false
-  - type: Mutation
-    field: MINIMAL_UPDATE_POST
-    dataSource: MINIMAL_UPDATE_POSTFunction
-    request: false
-    response: false
   - type: Query
     field: GET_POST
     dataSource: GET_POSTFunction
-    request: false
-    response: false
-  - type: Query
-    field: GET_LAST_POSTS
-    dataSource: GET_LAST_POSTSFunction
-    request: false
-    response: false
-  - type: Query
-    field: GET_LAST_POST_VERSIONS
-    dataSource: GET_LAST_POST_VERSIONSFunction
     request: false
     response: false
 dataSources:
@@ -51,18 +37,6 @@ dataSources:
     config:
       functionName: GET_POST
   - type: AWS_LAMBDA
-    name: GET_LAST_POSTSFunction
-    config:
-      functionName: GET_LAST_POSTS
-  - type: AWS_LAMBDA
     name: UPDATE_POSTFunction
     config:
       functionName: UPDATE_POST
-  - type: AWS_LAMBDA
-    name: MINIMAL_UPDATE_POSTFunction
-    config:
-      functionName: MINIMAL_UPDATE_POST
-  - type: AWS_LAMBDA
-    name: GET_LAST_POST_VERSIONSFunction
-    config:
-      functionName: GET_LAST_POST_VERSIONS

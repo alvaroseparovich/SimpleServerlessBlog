@@ -10,5 +10,10 @@ export const table = new Table({
       sortKey: 'PK',
       type: INDEX_TYPE.GSI,
     },
+    [process.env.SecondSecondaryIndex]: {
+      partitionKey: 'SK',
+      sortKey: 'GSI-2-PK',
+      type: INDEX_TYPE.GSI,
+    },
   },
 });
